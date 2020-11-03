@@ -3,23 +3,37 @@
 
 //Langsam = 80, Mittel = 90, Schnell = 130 --> Werte für Regleransteuerung, eingestellt durch Poti
 
+
+/*Beschaltung:
+
+  LC-Display: siehe AnagVision Word-Dok.
+
+  Regler:           9
+  Seilführung:      10
+  Fußschalter:      13
+
+  Drehzahl-Poti:    A0
+  Spannungseingang: A1
+
+*/
+
+
 #include <LiquidCrystal.h>
 #include <Servo.h>
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-#define verzh 10
-#define verzr 5
+#define VERZH 0
+#define VERZR 5
 #define FUEHRGESCHW 1000 // Je kleiner, desto schneller bewegt sich der Führ-Arm der Trommel
-#define LCDDAUER 1200 // Anzeigedauer der Daten in ms
+#define LCDDAUER 2300 // Anzeigedauer der Daten in ms
 
 Servo Regler;
 Servo Spur;
 
 float power = 30;
-int fusstaster, u, o, poti, potimap, potianzeige, z = 0, f, x = 0, d = 0, spg;
-unsigned long long int myTimer = 0, myTimer2 = 0, myTimer3 = 0;
-
+int fusstaster, u, o, poti, potimap, potianzeige, z = 0, f, x = 0, d = 0, spg, Min = 0, Sek = 0, Stu = 0;
+unsigned long long int myTimer = 0, myTimer2 = 0, myTimer3 = 0, myTimer4 = 0;
 
 void setup()
 {
@@ -30,7 +44,6 @@ void setup()
   pinMode(13, INPUT); // Fußtaster
 
   pinMode(13, INPUT_PULLUP); // Pullup am Fußtaster-Eingang aktiv schalten
-
 
   Regler.attach(9); // Regler an Ausgang 9
   Spur.attach(10); // Führungs-Servo an Ausgang 10
@@ -114,7 +127,6 @@ void loop()
     {
       f = 1;
     }
-
   }
 
   if (x == 0)
@@ -129,10 +141,10 @@ void loop()
     lcd.clear();
   }
 
-
   //_________________________________________________________
 
 
+  BetrZeit_erstellen();
   if (f == 1) { // Hier startet der Programmlauf
 
     if (millis() > (LCDDAUER + myTimer3)) {
@@ -153,6 +165,10 @@ void loop()
 
     if (z == 2) {
       UBat_anzeigen();
+    }
+
+    if (z == 3) {
+      BetrZeit_anzeigen();
     }
 
     fusstaster = digitalRead(13);
