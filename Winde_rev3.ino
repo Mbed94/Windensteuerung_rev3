@@ -8,8 +8,8 @@
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-#define verzh 4
-#define verzr 4
+#define verzh 10
+#define verzr 5
 #define FUEHRGESCHW 1000 // Je kleiner, desto schneller bewegt sich der Führ-Arm der Trommel
 #define LCDDAUER 1200 // Anzeigedauer der Daten in ms
 
